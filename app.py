@@ -43,10 +43,28 @@ CATEGORIES = ['academic', 'cultural', 'sports', 'tech']
 
 # ── Helper Functions ─────────────────────────────────────────────────────────
 
+def pick_best_image(images):
+    """
+    Pick the highest-quality image from Ticketmaster's image list.
+    Prefers the largest image by width; falls back to index 0.
+    """
+    if not images:
+        return ""
+    # Sort by width descending — largest image first
+    try:
+        sorted_imgs = sorted(images, key=lambda img: int(img.get("width", 0)), reverse=True)
+        return sorted_imgs[0].get("url", "")
+    except Exception:
+        return images[0].get("url", "")
+
+
 def upload_to_s3(image_url, event_name):
     """
     Download an image from a URL and upload it to the configured S3 bucket.
-    Returns the S3 public URL on success, or the original URL on failure.
+    Uses a two-tier strategy:
+      1. Try public-read ACL → permanent public S3 URL
+      2. If bucket blocks ACLs → upload privately + return 24h pre-signed URL
+    Falls back to original Ticketmaster URL on any failure.
     Uses IAM role attached to EC2 — no credentials in code.
     """
     if not S3_BUCKET:
@@ -54,36 +72,61 @@ def upload_to_s3(image_url, event_name):
         return image_url
 
     try:
-        # Download the image
-        img_response = requests.get(image_url, timeout=5)
+        # Download the image from Ticketmaster
+        img_response = requests.get(image_url, timeout=8)
         img_response.raise_for_status()
 
-        # Generate a safe filename
-        safe_name = "".join(c if c.isalnum() or c in "-_" else "_" for c in event_name)
+        # Detect content type from response headers
+        content_type = img_response.headers.get("Content-Type", "image/jpeg").split(";")[0]
+        ext = "jpg" if "jpeg" in content_type else content_type.split("/")[-1]
+
+        # Generate a safe, unique filename
+        safe_name = "".join(c if c.isalnum() or c in "-_" else "_" for c in event_name)[:60]
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-        key = f"event-images/{safe_name}_{timestamp}.jpg"
+        key = f"event-images/{safe_name}_{timestamp}.{ext}"
 
-        # Upload to S3 using IAM role (no explicit credentials)
         s3_client = boto3.client("s3", region_name=S3_REGION)
-        s3_client.put_object(
-            Bucket=S3_BUCKET,
-            Key=key,
-            Body=img_response.content,
-            ContentType="image/jpeg"
-        )
 
-        s3_url = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com/{key}"
-        logger.info(f"Uploaded image to S3: {s3_url}")
-        return s3_url
+        # Strategy 1: public-read ACL — permanent public URL
+        # Works when bucket has "Block Public ACLs" DISABLED
+        try:
+            s3_client.put_object(
+                Bucket=S3_BUCKET,
+                Key=key,
+                Body=img_response.content,
+                ContentType=content_type,
+                ACL="public-read"
+            )
+            s3_url = f"https://{S3_BUCKET}.s3.amazonaws.com/{key}"
+            logger.info(f"Uploaded to S3 (public-read): {s3_url}")
+            return s3_url
 
-    except (ClientError, NoCredentialsError) as e:
-        logger.warning(f"S3 upload failed (credentials/client error): {e}")
+        except ClientError as acl_err:
+            # Strategy 2: bucket blocks public ACLs — upload privately,
+            # return a 24-hour pre-signed URL (still renders fine in <img>)
+            logger.warning(f"public-read blocked ({acl_err.response['Error']['Code']}). Using pre-signed URL.")
+            s3_client.put_object(
+                Bucket=S3_BUCKET,
+                Key=key,
+                Body=img_response.content,
+                ContentType=content_type
+            )
+            presigned_url = s3_client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": S3_BUCKET, "Key": key},
+                ExpiresIn=86400  # 24 hours
+            )
+            logger.info(f"Uploaded to S3 (pre-signed 24h): {presigned_url[:80]}...")
+            return presigned_url
+
+    except (NoCredentialsError, ClientError) as e:
+        logger.warning(f"S3 upload failed: {e} — using original Ticketmaster URL")
         return image_url
     except requests.exceptions.RequestException as e:
-        logger.warning(f"Failed to download image for S3 upload: {e}")
+        logger.warning(f"Failed to download image: {e} — using original Ticketmaster URL")
         return image_url
     except Exception as e:
-        logger.warning(f"Unexpected error during S3 upload: {e}")
+        logger.warning(f"Unexpected S3 error: {e} — using original Ticketmaster URL")
         return image_url
 
 
@@ -118,14 +161,13 @@ def fetch_events():
         result = []
 
         for i, e in enumerate(raw_events):
-            # Safely extract image URL
-            image_url = ""
-            if e.get("images"):
-                image_url = e["images"][0].get("url", "")
+            # Pick the best (largest) image from Ticketmaster's image list
+            image_url = pick_best_image(e.get("images", []))
 
-            # Upload image to S3 if configured
+            # Upload image to S3 (returns S3 URL on success, original URL on failure)
             if image_url:
                 image_url = upload_to_s3(image_url, e.get("name", "event"))
+                logger.info(f"Event '{e.get('name','')}' → image: {image_url[:80]}...")
 
             # Safely extract venue name
             venue = "Venue TBD"
