@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniEvent — GIKI</title>
+    <title>UniEvent — Scalable University Event Management System</title>
+    <meta name="description" content="UniEvent is a scalable university event management system powered by AWS. Discover and register for live events fetched from Ticketmaster API.">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --giki-green: #006633;
-            --giki-dark: #003d1f;
-            --giki-gold: #c9a84c;
-            --giki-light: #f5f0e8;
-            --giki-white: #fdfcf8;
-            --giki-gray: #8a8a7a;
+            --primary: #006633;
+            --primary-dark: #003d1f;
+            --accent: #c9a84c;
+            --bg-light: #f5f0e8;
+            --bg-white: #fdfcf8;
+            --text-muted: #8a8a7a;
+            --success: #22c55e;
+            --error: #ef4444;
         }
 
         * {
@@ -26,17 +29,16 @@
 
         body {
             font-family: 'DM Sans', sans-serif;
-            background: var(--giki-white);
+            background: var(--bg-white);
             color: #1a1a14;
             min-height: 100vh;
         }
 
-        /* HEADER */
+        /* ── HEADER ────────────────────────────────────────────── */
         header {
-            background: var(--giki-dark);
+            background: var(--primary-dark);
             position: relative;
             overflow: hidden;
-            padding: 0;
         }
 
         .header-bg {
@@ -66,10 +68,10 @@
             padding: 28px 50px;
         }
 
-        .giki-emblem {
+        .emblem {
             width: 70px;
             height: 70px;
-            background: var(--giki-gold);
+            background: var(--accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -77,7 +79,7 @@
             font-size: 28px;
             font-family: 'Playfair Display', serif;
             font-weight: 900;
-            color: var(--giki-dark);
+            color: var(--primary-dark);
             flex-shrink: 0;
             box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.3), 0 4px 20px rgba(0, 0, 0, 0.3);
             animation: emblemGlow 3s ease-in-out infinite alternate;
@@ -87,7 +89,6 @@
             from {
                 box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.3), 0 4px 20px rgba(0, 0, 0, 0.3);
             }
-
             to {
                 box-shadow: 0 0 0 6px rgba(201, 168, 76, 0.15), 0 4px 30px rgba(201, 168, 76, 0.2);
             }
@@ -102,7 +103,7 @@
         }
 
         .header-text h1 span {
-            color: var(--giki-gold);
+            color: var(--accent);
         }
 
         .header-text p {
@@ -119,23 +120,23 @@
 
         .header-meta .institute-name {
             font-family: 'Playfair Display', serif;
-            color: var(--giki-gold);
+            color: var(--accent);
             font-size: 0.75em;
             letter-spacing: 2px;
             text-transform: uppercase;
             line-height: 1.5;
         }
 
-        .header-meta .location {
+        .header-meta .tagline {
             color: rgba(255, 255, 255, 0.4);
             font-size: 0.72em;
             margin-top: 4px;
             font-weight: 300;
         }
 
-        /* NAV STRIP */
+        /* ── NAV STRIP ────────────────────────────────────────── */
         .nav-strip {
-            background: var(--giki-green);
+            background: var(--primary);
             padding: 10px 50px;
             display: flex;
             gap: 30px;
@@ -153,14 +154,14 @@
         }
 
         .nav-strip a:hover {
-            color: var(--giki-gold);
+            color: var(--accent);
         }
 
         .nav-strip .live-badge {
             margin-left: auto;
             background: rgba(201, 168, 76, 0.15);
             border: 1px solid rgba(201, 168, 76, 0.4);
-            color: var(--giki-gold);
+            color: var(--accent);
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.72em;
@@ -173,28 +174,19 @@
         .live-dot {
             width: 6px;
             height: 6px;
-            background: var(--giki-gold);
+            background: var(--accent);
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.4;
-                transform: scale(0.8);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
         }
 
-        /* HERO SECTION */
+        /* ── HERO SECTION ─────────────────────────────────────── */
         .hero {
-            background: var(--giki-light);
+            background: var(--bg-light);
             padding: 50px 50px 40px;
             border-bottom: 1px solid rgba(0, 102, 51, 0.1);
             display: flex;
@@ -206,20 +198,20 @@
         .hero-left h2 {
             font-family: 'Playfair Display', serif;
             font-size: 2.8em;
-            color: var(--giki-dark);
+            color: var(--primary-dark);
             line-height: 1.15;
             max-width: 500px;
         }
 
         .hero-left h2 em {
             font-style: normal;
-            color: var(--giki-green);
+            color: var(--primary);
             position: relative;
         }
 
         .hero-left p {
             margin-top: 16px;
-            color: var(--giki-gray);
+            color: var(--text-muted);
             font-size: 0.95em;
             line-height: 1.7;
             max-width: 420px;
@@ -238,20 +230,20 @@
         .stat-number {
             font-family: 'Playfair Display', serif;
             font-size: 2.5em;
-            color: var(--giki-green);
+            color: var(--primary);
             font-weight: 900;
             line-height: 1;
         }
 
         .stat-label {
             font-size: 0.72em;
-            color: var(--giki-gray);
+            color: var(--text-muted);
             margin-top: 4px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
-        /* FILTER BAR */
+        /* ── FILTER BAR ───────────────────────────────────────── */
         .filter-bar {
             padding: 20px 50px;
             background: #fff;
@@ -264,7 +256,7 @@
 
         .filter-label {
             font-size: 0.78em;
-            color: var(--giki-gray);
+            color: var(--text-muted);
             font-weight: 500;
             letter-spacing: 0.5px;
             text-transform: uppercase;
@@ -276,7 +268,7 @@
             border-radius: 20px;
             border: 1.5px solid rgba(0, 102, 51, 0.2);
             background: transparent;
-            color: var(--giki-green);
+            color: var(--primary);
             font-size: 0.8em;
             font-family: 'DM Sans', sans-serif;
             cursor: pointer;
@@ -285,12 +277,12 @@
 
         .filter-btn:hover,
         .filter-btn.active {
-            background: var(--giki-green);
+            background: var(--primary);
             color: white;
-            border-color: var(--giki-green);
+            border-color: var(--primary);
         }
 
-        /* EVENTS GRID */
+        /* ── EVENTS GRID ──────────────────────────────────────── */
         .events-section {
             padding: 40px 50px 60px;
         }
@@ -305,12 +297,12 @@
         .section-header h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.6em;
-            color: var(--giki-dark);
+            color: var(--primary-dark);
         }
 
         .section-header .count {
             font-size: 0.8em;
-            color: var(--giki-gray);
+            color: var(--text-muted);
         }
 
         .section-header .divider {
@@ -326,6 +318,7 @@
             gap: 24px;
         }
 
+        /* ── EVENT CARD ───────────────────────────────────────── */
         .event-card {
             background: #fff;
             border-radius: 12px;
@@ -334,6 +327,8 @@
             border: 1px solid rgba(0, 0, 0, 0.05);
             transition: transform 0.25s ease, box-shadow 0.25s ease;
             animation: cardIn 0.5s ease both;
+            display: flex;
+            flex-direction: column;
         }
 
         .event-card:hover {
@@ -342,40 +337,19 @@
         }
 
         @keyframes cardIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .event-card:nth-child(1) {
-            animation-delay: 0.05s;
-        }
-
-        .event-card:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .event-card:nth-child(3) {
-            animation-delay: 0.15s;
-        }
-
-        .event-card:nth-child(4) {
-            animation-delay: 0.2s;
-        }
-
-        .event-card:nth-child(5) {
-            animation-delay: 0.25s;
-        }
-
-        .event-card:nth-child(6) {
-            animation-delay: 0.3s;
-        }
+        .event-card:nth-child(1) { animation-delay: 0.05s; }
+        .event-card:nth-child(2) { animation-delay: 0.1s; }
+        .event-card:nth-child(3) { animation-delay: 0.15s; }
+        .event-card:nth-child(4) { animation-delay: 0.2s; }
+        .event-card:nth-child(5) { animation-delay: 0.25s; }
+        .event-card:nth-child(6) { animation-delay: 0.3s; }
+        .event-card:nth-child(7) { animation-delay: 0.35s; }
+        .event-card:nth-child(8) { animation-delay: 0.4s; }
+        .event-card:nth-child(9) { animation-delay: 0.45s; }
 
         .card-image {
             width: 100%;
@@ -387,7 +361,7 @@
         .card-image-placeholder {
             width: 100%;
             height: 190px;
-            background: linear-gradient(135deg, var(--giki-dark) 0%, var(--giki-green) 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -396,6 +370,9 @@
 
         .card-body {
             padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .card-tags {
@@ -416,7 +393,7 @@
 
         .tag-university {
             background: rgba(0, 102, 51, 0.1);
-            color: var(--giki-green);
+            color: var(--primary);
             border: 1px solid rgba(0, 102, 51, 0.2);
         }
 
@@ -429,7 +406,7 @@
         .card-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.1em;
-            color: var(--giki-dark);
+            color: var(--primary-dark);
             margin-bottom: 10px;
             line-height: 1.35;
         }
@@ -446,7 +423,7 @@
             align-items: center;
             gap: 8px;
             font-size: 0.8em;
-            color: var(--giki-gray);
+            color: var(--text-muted);
         }
 
         .meta-icon {
@@ -461,14 +438,200 @@
             line-height: 1.6;
             border-top: 1px solid rgba(0, 0, 0, 0.06);
             padding-top: 12px;
+            flex: 1;
         }
 
-        /* ERROR STATE */
+        /* ── REGISTER BUTTON ──────────────────────────────────── */
+        .register-btn {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+            padding: 10px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 102, 51, 0.3);
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .register-btn.registered {
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* ── REGISTRATION MODAL ───────────────────────────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3em;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+        }
+
+        .modal .modal-event-name {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .modal label {
+            display: block;
+            font-size: 0.8em;
+            font-weight: 500;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9em;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        .modal input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1.5px solid rgba(0, 0, 0, 0.15);
+            color: var(--text-muted);
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 4px 15px rgba(0, 102, 51, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ── TOAST NOTIFICATION ───────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 24px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.88em;
+            font-weight: 500;
+            z-index: 2000;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 380px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        /* ── ERROR STATE ──────────────────────────────────────── */
         .error-state {
             grid-column: 1 / -1;
             text-align: center;
             padding: 60px 20px;
-            color: var(--giki-gray);
+            color: var(--text-muted);
         }
 
         .error-state .error-icon {
@@ -481,9 +644,9 @@
             line-height: 1.6;
         }
 
-        /* FOOTER */
+        /* ── FOOTER ───────────────────────────────────────────── */
         footer {
-            background: var(--giki-dark);
+            background: var(--primary-dark);
             color: rgba(255, 255, 255, 0.5);
             padding: 30px 50px;
             display: flex;
@@ -502,14 +665,14 @@
         .footer-logo {
             width: 36px;
             height: 36px;
-            background: var(--giki-gold);
+            background: var(--accent);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Playfair Display', serif;
             font-weight: 900;
-            color: var(--giki-dark);
+            color: var(--primary-dark);
             font-size: 14px;
         }
 
@@ -531,11 +694,11 @@
         }
 
         .footer-right a {
-            color: var(--giki-gold);
+            color: var(--accent);
             text-decoration: none;
         }
 
-        /* RESPONSIVE */
+        /* ── RESPONSIVE ───────────────────────────────────────── */
         @media (max-width: 768px) {
             .header-content {
                 grid-template-columns: auto 1fr;
@@ -570,6 +733,18 @@
             .footer-right {
                 text-align: left;
             }
+
+            .modal {
+                padding: 24px;
+                margin: 16px;
+            }
+
+            .toast {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -580,32 +755,30 @@
         <div class="header-bg"></div>
         <div class="header-pattern"></div>
         <div class="header-content">
-            <div class="giki-emblem">GIK</div>
+            <div class="emblem">UE</div>
             <div class="header-text">
                 <h1>Uni<span>Event</span></h1>
-                <p>Centralized Event Management Platform</p>
+                <p>Scalable University Event Management System</p>
             </div>
             <div class="header-meta">
-                <div class="institute-name">Ghulam Ishaq Khan<br>Institute</div>
-                <div class="location">📍 Topi, Khyber Pakhtunkhwa</div>
+                <div class="institute-name">Cloud Computing<br>AWS Deployment</div>
+                <div class="tagline">🌐 Powered by Ticketmaster API</div>
             </div>
         </div>
     </header>
 
     <nav class="nav-strip">
         <a href="#">Home</a>
-        <a href="#">Academic Events</a>
-        <a href="#">Society Activities</a>
-        <a href="#">Festivals</a>
-        <a href="#">Gallery</a>
+        <a href="#">Events</a>
+        <a href="#">Registrations</a>
+        <a href="#">About</a>
         <span class="live-badge"><span class="live-dot"></span>LIVE EVENTS</span>
     </nav>
 
     <section class="hero">
         <div class="hero-left">
-            <h2>Discover <em>Events</em> at GIKI</h2>
-            <p>Stay connected with all university events — from society recruitment drives and annual festivals to
-                academic seminars and cultural nights. All in one place.</p>
+            <h2>Discover <em>Events</em> Near You</h2>
+            <p>Stay connected with live events — from concerts and sports to academic conferences and festivals. All data fetched in real-time from the Ticketmaster API.</p>
         </div>
         <div class="hero-stats">
             <div class="stat">
@@ -613,12 +786,12 @@
                 <div class="stat-label">Live Events</div>
             </div>
             <div class="stat">
-                <div class="stat-number">4</div>
-                <div class="stat-label">Faculties</div>
+                <div class="stat-number">2</div>
+                <div class="stat-label">EC2 Instances</div>
             </div>
             <div class="stat">
-                <div class="stat-number">30+</div>
-                <div class="stat-label">Societies</div>
+                <div class="stat-number">S3</div>
+                <div class="stat-label">Image Storage</div>
             </div>
         </div>
     </section>
@@ -646,19 +819,19 @@
         </div>
         <div class="events-grid" id="eventsGrid">
 
-            {# ── SERVER-RENDERED EVENT CARDS (Jinja2) ── #}
             {% if events %}
             {% for event in events %}
-            <div class="event-card" data-category="{{ event.category }}">
+            <div class="event-card" data-category="{{ event.category }}" data-event-id="{{ event.id }}" data-event-name="{{ event.name }}">
                 {% if event.image %}
                 <img class="card-image" src="{{ event.image }}" alt="{{ event.name }}"
-                    onerror="this.style.display='none'">
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="card-image-placeholder" style="display:none;">{{ event.emoji }}</div>
                 {% else %}
                 <div class="card-image-placeholder">{{ event.emoji }}</div>
                 {% endif %}
                 <div class="card-body">
                     <div class="card-tags">
-                        <span class="tag tag-university">🎓 GIKI Event</span>
+                        <span class="tag tag-university">🎓 University Event</span>
                         <span class="tag tag-gold">{{ event.category | capitalize }}</span>
                     </div>
                     <div class="card-title">{{ event.name }}</div>
@@ -671,18 +844,21 @@
                             <span class="meta-icon">📍</span> {{ event.venue }}
                         </div>
                     </div>
-                    <div class="card-description">{{ event.description[:110] }}{% if event.description | length > 110
-                        %}...{% endif %}</div>
+                    <div class="card-description">{{ event.description[:120] }}{% if event.description | length > 120 %}...{% endif %}</div>
+                    <button class="register-btn" onclick="openRegistration(this)" id="reg-btn-{{ loop.index }}">
+                        ✨ Register Now
+                    </button>
                 </div>
             </div>
             {% endfor %}
             {% else %}
-            {# ── FALLBACK: API failed or no events ── #}
+            <!-- Error State — No demo/static fallback -->
             <div class="error-state">
                 <div class="error-icon">⚠️</div>
-                <p>Could not load live events.<br>
-                    The server was unable to reach the Ticketmaster API.<br><br>
-                    Please ensure the <strong>TICKETMASTER_API_KEY</strong> environment variable is set correctly.</p>
+                <p>Unable to fetch events at this time.<br>
+                    The system could not retrieve data from the Ticketmaster API.<br><br>
+                    Please ensure the <strong>TICKETMASTER_API_KEY</strong> environment variable is configured correctly
+                    and the API service is reachable.</p>
             </div>
             {% endif %}
 
@@ -691,26 +867,53 @@
 
     <footer>
         <div class="footer-brand">
-            <div class="footer-logo">GIK</div>
+            <div class="footer-logo">UE</div>
             <div class="footer-brand-text">
                 <strong>UniEvent Platform</strong>
-                GIKI Cloud Computing — CE 308/408
+                Cloud Computing — AWS Deployment
             </div>
         </div>
         <div class="footer-right">
             Powered by <a href="#">AWS</a> · EC2 · S3 · ELB<br>
-            © 2026 Ghulam Ishaq Khan Institute of Engineering Sciences and Technology
+            Data Source: <a href="https://developer.ticketmaster.com/" target="_blank">Ticketmaster Discovery API</a><br>
+            &copy; 2026 UniEvent — Scalable Event Management System
         </div>
     </footer>
 
+    <!-- Registration Modal -->
+    <div class="modal-overlay" id="registrationModal">
+        <div class="modal">
+            <h4>Event Registration</h4>
+            <p class="modal-event-name" id="modalEventName">Event Name</p>
+            <form id="registrationForm" onsubmit="submitRegistration(event)">
+                <input type="hidden" id="regEventId" value="">
+                <input type="hidden" id="regEventName" value="">
+                <label for="regName">Full Name</label>
+                <input type="text" id="regName" placeholder="Enter your full name" required>
+                <label for="regEmail">Email Address</label>
+                <input type="email" id="regEmail" placeholder="Enter your email" required>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn-submit" id="submitBtn">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        /*
-         * ✅ NO API KEY in frontend — all data is server-rendered by Flask/Jinja2.
-         * This script ONLY handles client-side filtering of already-loaded cards.
+        /**
+         * UniEvent — Frontend Logic
+         * All event data is server-rendered by Flask/Jinja2 (from Ticketmaster API).
+         * This script handles: filtering, registration modal, and toast notifications.
          */
 
+        let currentRegButton = null;
+
+        // ── Filtering ────────────────────────────────────────────
         function filterEvents(category, btn) {
-            // Update active button
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -728,6 +931,89 @@
 
             document.getElementById('countLabel').textContent =
                 visibleCount + ' events found';
+        }
+
+        // ── Registration Modal ───────────────────────────────────
+        function openRegistration(btn) {
+            currentRegButton = btn;
+            const card = btn.closest('.event-card');
+            const eventId = card.dataset.eventId;
+            const eventName = card.dataset.eventName;
+
+            document.getElementById('regEventId').value = eventId;
+            document.getElementById('regEventName').value = eventName;
+            document.getElementById('modalEventName').textContent = eventName;
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').textContent = 'Register';
+
+            document.getElementById('registrationModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('registrationModal').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('registrationModal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ── Submit Registration ──────────────────────────────────
+        async function submitRegistration(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registering...';
+
+            const payload = {
+                event_id: document.getElementById('regEventId').value,
+                event_name: document.getElementById('regEventName').value,
+                user_name: document.getElementById('regName').value,
+                user_email: document.getElementById('regEmail').value
+            };
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    closeModal();
+
+                    // Update button state
+                    if (currentRegButton) {
+                        currentRegButton.textContent = '✅ Registered';
+                        currentRegButton.classList.add('registered');
+                    }
+                } else {
+                    showToast(result.message || 'Registration failed.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Register';
+                }
+            } catch (err) {
+                showToast('Network error. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register';
+            }
+        }
+
+        // ── Toast Notification ───────────────────────────────────
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
         }
     </script>
 </body>
