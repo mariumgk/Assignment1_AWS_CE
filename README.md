@@ -258,16 +258,20 @@ User → Browser → ALB → EC2 Instance → Flask (app.py)
 
 ## 📸 Screenshots
 
-> Add screenshots of your deployed application here:
+### Homepage — Live Events from Ticketmaster API
+![Homepage](screenshots/homepage.png)
 
-| Screenshot | Description |
-|------------|-------------|
-| ![Homepage](screenshots/homepage.png) | Main page with live events from Ticketmaster |
-| ![Event Cards](screenshots/event-cards.png) | Event cards with images, dates, and venues |
-| ![Registration](screenshots/registration.png) | Registration modal with form validation |
-| ![Success](screenshots/success-toast.png) | Success notification after registration |
-| ![ALB Health](screenshots/alb-health.png) | ALB target group showing healthy instances |
-| ![S3 Bucket](screenshots/s3-bucket.png) | S3 bucket with uploaded event images |
+### Event Cards — Images, Dates & Venues
+![Event Cards](screenshots/event-cards.png)
+
+### Event Registration Modal
+![Registration](screenshots/registration.png)
+
+### Success Notification After Registration
+![Success Toast](screenshots/success-toast.png)
+
+### S3 Bucket — Uploaded Event Images
+![S3 Bucket](screenshots/s3-bucket.png)
 
 ---
 
