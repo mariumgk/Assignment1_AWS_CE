@@ -4,6 +4,18 @@ A cloud-native, scalable event management platform built with **Flask** and depl
 
 ---
 
+## 🌐 Live Demo
+
+Access the deployed application via AWS Load Balancer:
+
+```
+http://<your-alb-dns-here>
+```
+
+> Replace with your actual ALB DNS name from the AWS Console → EC2 → Load Balancers.
+
+---
+
 ## 📋 Table of Contents
 
 - [Features](#-features)
@@ -15,9 +27,15 @@ A cloud-native, scalable event management platform built with **Flask** and depl
   - [Local Development](#local-development)
   - [EC2 Deployment](#ec2-deployment)
 - [How It Works](#-how-it-works)
+- [Data Flow Summary](#-data-flow-summary)
 - [Screenshots](#-screenshots)
 - [Environment Variables](#-environment-variables)
 - [API Endpoints](#-api-endpoints)
+- [Fault Tolerance Test](#-fault-tolerance-test)
+- [Security Design](#-security-design)
+- [Scalability](#-scalability)
+- [Future Improvements](#-future-improvements)
+- [Author](#-author)
 
 ---
 
@@ -227,6 +245,20 @@ UniEvent/
 
 ---
 
+## 🔄 Data Flow Summary
+
+Event data is fetched from the **Ticketmaster API**, processed in **Flask**, images are uploaded to **S3**, and results are served to users via **load-balanced EC2 instances**.
+
+```
+Ticketmaster API → Flask (fetch_events) → upload_to_s3 → S3 Bucket
+                                        ↓
+                              Jinja2 renders index.html
+                                        ↓
+                     ALB → User's Browser (images served from S3)
+```
+
+---
+
 ## 🔄 How It Works
 
 ### End-to-End Flow
@@ -280,7 +312,7 @@ User → Browser → ALB → EC2 Instance → Flask (app.py)
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `TICKETMASTER_API_KEY` | Ticketmaster Discovery API consumer key | ✅ Yes |
-| `S3_BUCKET_NAME` | Name of the S3 bucket for image storage | Optional (for S3 feature) |
+| `S3_BUCKET_NAME` | Name of the S3 bucket for image storage | ⚠️ Required for S3 image storage feature |
 | `S3_REGION` | AWS region for S3 bucket (default: `us-east-1`) | Optional |
 | `PORT` | Port to run Flask on (default: `5000`, use `80` on EC2) | Optional |
 
@@ -296,24 +328,65 @@ User → Browser → ALB → EC2 Instance → Flask (app.py)
 
 ---
 
-## ⚙️ Assignment Compliance
+## 🔁 Fault Tolerance Test
 
-| Requirement | Status |
-|-------------|--------|
-| Event data fetched from external Open API | ✅ Ticketmaster API |
-| No hardcoded/demo/static events | ✅ Removed all DEMO_EVENTS |
-| S3 integration for image storage | ✅ boto3 with IAM role |
-| Load balanced across multiple EC2 | ✅ 2 instances behind ALB |
-| VPC with public/private subnets | ✅ Configured |
-| IAM role (no credentials in code) | ✅ EC2 instance role |
-| Error handling for API failures | ✅ Clean error messages |
-| Registration feature | ✅ Modal + JSON storage |
+To demonstrate high availability:
+
+- One EC2 instance was **manually stopped** via the AWS Console
+- The application remained **fully accessible** via the Load Balancer URL
+- Traffic was **automatically routed** to the remaining healthy instance
+- Once the stopped instance was restarted, it rejoined the Target Group automatically
+
+This confirms the system is **fault-tolerant** and self-healing through the ALB health check mechanism.
+
+---
+
+## 🔐 Security Design
+
+| Measure | Implementation |
+|---------|----------------|
+| **Private Subnets** | EC2 instances have no direct internet exposure — only reachable via ALB |
+| **IAM Roles** | S3 access uses instance-attached IAM roles; no credentials in code or `.env` |
+| **S3 Permissions** | Bucket access restricted to the specific EC2 IAM role via resource policy |
+| **Security Groups** | Inbound HTTP (port 80) allowed only from the Load Balancer, not the open internet |
+| **Environment Variables** | Sensitive API keys stored in environment variables, excluded from version control via `.gitignore` |
+
+---
+
+## ⚡ Scalability
+
+- **Horizontal scaling** — multiple EC2 instances run identical Flask app copies
+- **Application Load Balancer** distributes incoming traffic evenly across all instances
+- **Stateless design** — no session data stored on EC2, so any instance can serve any request
+- **Elastic scaling** — new EC2 instances can be added to the Target Group with zero downtime
+- Future: an **Auto Scaling Group** can be configured to add/remove instances based on CPU load automatically
+
+---
+
+## 🚧 Future Improvements
+
+| Improvement | Description |
+|-------------|-------------|
+| **User Authentication** | Add login/signup system so users can manage their registrations |
+| **Database Storage** | Replace `registrations.json` with Amazon RDS (PostgreSQL/MySQL) |
+| **Auto Scaling** | Configure EC2 Auto Scaling Group for dynamic capacity management |
+| **API Response Caching** | Cache Ticketmaster results in ElastiCache/Redis to reduce API calls |
+| **Custom Event Upload** | Allow admins to upload their own events and images directly |
+| **HTTPS Support** | Add SSL certificate via AWS Certificate Manager + HTTPS listener on ALB |
 
 ---
 
 ## 📝 License
 
 This project was created as part of a Cloud Computing course assignment.
+
+---
+
+## 👨‍💻 Author
+
+**Marium Imran**  
+Cloud Computing Project 
+Ghulam Ishaq Khan Institute of Engineering Sciences and Technology
 
 ---
 
