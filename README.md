@@ -8,11 +8,9 @@ A cloud-native, scalable event management platform built with **Flask** and depl
 
 Access the deployed application via AWS Load Balancer:
 
-```
-http://<your-alb-dns-here>
-```
+**🔗 [http://unievent-alb-2080893478.us-east-1.elb.amazonaws.com/](http://unievent-alb-2080893478.us-east-1.elb.amazonaws.com/)**
 
-> Replace with your actual ALB DNS name from the AWS Console → EC2 → Load Balancers.
+> Deployed on AWS — Application Load Balancer (us-east-1)
 
 ---
 
